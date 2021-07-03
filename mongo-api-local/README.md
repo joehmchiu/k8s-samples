@@ -16,7 +16,7 @@ example:
 
 ## Deployment
 * kubectl create -f deploy.yml
-or 
+<br>or 
 * kubectl apply -f deploy.yml
 
 ## Check DNS
@@ -25,3 +25,6 @@ kubectl -n kube-system -l=k8s-app=kube-dns get pods
 ## Test
 * curl http://localhost:8600/api/v1/users/
 * curl http://localhost:8600/api/v1/users/[rec_id]
+
+## Deployment
+* kubectl delete -f deploy.yml
