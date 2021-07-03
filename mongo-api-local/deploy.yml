@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+  hostPath:
+    path: "/Users/k8s/mongo"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-api
+  template:
+    metadata:
+      labels:
+        app: mongo-api
+    spec:
+      # need to setup DNS policy or an error "bad auth : Authentication failed." shows up
+      dnsPolicy: Default
+      volumes:
+      - name: mongo-app
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+      containers:
+      - name: mongo-api
+        image: mongo-api
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8600
+          name: mongo-api
+        volumeMounts:            
+        - name: mongo-app
+          mountPath: "/tmp/"
+---            
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: mongo-api
+  ports:
+    - port: 8600
+      targetPort: 8600
