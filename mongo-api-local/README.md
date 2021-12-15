@@ -23,6 +23,7 @@ example:
 kubectl -n kube-system -l=k8s-app=kube-dns get pods
 
 ## Test
+* curl $(minikube service --url mongo-service)/api/v1/users/
 * curl http://localhost:8600/api/v1/users/
 * curl http://localhost:8600/api/v1/users/[rec_id]
 
