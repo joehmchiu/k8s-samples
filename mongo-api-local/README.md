@@ -22,6 +22,9 @@ example:
 ## Check DNS
 kubectl -n kube-system -l=k8s-app=kube-dns get pods
 
+## Forward to localhost
+kubectl port-forward svc/mongo-service -n mongo 8600:8600 --address='0.0.0.0'
+
 ## Test
 * curl $(minikube service --url mongo-service)/api/v1/users/
 * curl http://localhost:8600/api/v1/users/
