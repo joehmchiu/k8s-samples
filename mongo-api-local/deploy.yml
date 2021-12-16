@@ -88,6 +88,10 @@ spec:
   externalIPs:
     - xxx.xxx.xxx.xxx
   ports:
-    - name: http
-      port: 8600
-      nodePort: 31600
+    - port: 8600
+      targetPort: 8600
+#   OR fixed the node port      
+#   ports:
+#     - name: http
+#       port: 8600
+#       nodePort: 31600
