@@ -1,6 +1,11 @@
+kind: Namespace
+metadata:
+  name: mongo
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  namespace: mongo
   name: mongo-pv
   labels:
     type: local
@@ -12,11 +17,12 @@ spec:
     - ReadWriteOnce
     - ReadOnlyMany
   hostPath:
-    path: "/Users/k8s/mongo"
+    path: "/YourPath/demo/vol/mongo"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  namespace: mongo
   name: mongo-pvc
 spec:
   storageClassName: manual
@@ -27,9 +33,19 @@ spec:
     requests:
       storage: 8Gi
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: mongo
+  name: mongo-dns
+data:
+  upstreamNameservers: |
+    ["8.8.8.8"]
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: mongo
   name: mongo-api
 spec:
   replicas: 1
@@ -54,18 +70,23 @@ spec:
         ports:
         - containerPort: 8600
           name: mongo-api
-        volumeMounts:            
+        volumeMounts:
         - name: mongo-app
           mountPath: "/tmp/"
----            
+---
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: mongo
   name: mongo-service
 spec:
   type: LoadBalancer
   selector:
     app: mongo-api
+  # get it by: hostname -I | awk '{print $1}'
+  externalIPs:
+    - xxx.xxx.xxx.xxx
   ports:
-    - port: 8600
-      targetPort: 8600
+    - name: http
+      port: 8600
+      nodePort: 31600
