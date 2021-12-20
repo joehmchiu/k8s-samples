@@ -82,7 +82,8 @@ def create():
 
 
     try:
-        res = tab.insert(data)
+        # updated insert to insert_one for pymongo updates
+        res = tab.insert_one(data)
     except Exception as e:
         output = { 'error' : '%s' % str(e) }
         return jsonify(output)
@@ -92,7 +93,7 @@ def create():
         output = { "record": [str(v) for v in res], 'result' : "User created successfully" }
     else:
         # Return Id of the newly created item
-        output = { "id": str(res), 'result' : "User created successfully" }
+        output = { "id": str(res.inserted_id), 'result' : "User created successfully" }
 
     t2 = time.time()
     output = fill(output, t1, t2)
