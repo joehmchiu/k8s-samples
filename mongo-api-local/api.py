@@ -170,7 +170,7 @@ def delete(id):
 
     if go:
         tab.delete_one({'_id' : ObjectId(id)})
-        output = { 'result' : "%s deleted" % id }
+        output = { 'id': id, 'status': "deleted" }
 
     return jsonify(output)
 
